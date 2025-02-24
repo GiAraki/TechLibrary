@@ -2,7 +2,6 @@
 using TechLibrary.Api.UseCases.Users.Register;
 using TechLibrary.Communication.Requests;
 using TechLibrary.Communication.Responses;
-using TechLibrary.Exception;
 
 namespace TechLibrary.Api.Controllers
 {
@@ -13,27 +12,13 @@ namespace TechLibrary.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ResponseRegisteredUserJson), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseErrorMessageJson), StatusCodes.Status400BadRequest)]
-        public IActionResult Create(RequestUserJson request)
+        public IActionResult Register(RequestUserJson request)
         {
-            try
-            {
                 var useCase = new RegisterUserUseCase();
+
                 var response = useCase.Execute(request);
+
                 return Created(string.Empty, response);
-            }
-            catch (TechLibraryException ex)
-            {
-                return BadRequest(new ResponseErrorMessageJson
-                {
-                    ErrorMessages = ex.GetErrorMessages()
-                });
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorMessageJson {
-                    ErrorMessages = ["An error occurred while processing the request."]
-                });
-            }
         }
     }
 
